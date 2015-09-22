@@ -120,6 +120,13 @@ Begin VB.Form F_trafficmon
          Caption         =   "&filter"
       End
    End
+   Begin VB.Menu m_help 
+      Caption         =   "&?"
+      Begin VB.Menu m_about 
+         Caption         =   "&About"
+         Shortcut        =   {F1}
+      End
+   End
 End
 Attribute VB_Name = "F_trafficmon"
 Attribute VB_GlobalNameSpace = False
@@ -149,7 +156,7 @@ Dim oFilterOut As New C_filter
 Dim m_bgColor As ColorConstants
 
 Private Sub Form_Load()
-    Caption = "TrafficMon Rev.:" + Mid("$Rev:: 954  $", 6, 4)
+    Caption = "TrafficMon Rev." + Mid("$Rev:: 955  $", 7, 4)
     m_maxIn = max_meter
     m_maxOut = max_meter
     Timer1.Interval = 750
@@ -164,6 +171,10 @@ Private Sub Form_Load()
     P_out.ForeColor = ColorConstants.vbRed
     P_in.BackColor = ColorConstants.vbBlack
     P_out.BackColor = ColorConstants.vbBlack
+End Sub
+
+Private Sub m_about_Click()
+    MsgBox Me.Caption + vbCrLf + vbCrLf + "This is freeware." + vbCrLf + "2015 by lifeSim.de", vbOKOnly, "About " + Me.Caption
 End Sub
 
 Private Sub m_automax_Click()
@@ -186,7 +197,7 @@ Private Sub m_int_Click()
     
     s = InputBox("New Inverval in ms:", "Set Interval", Str(Timer1.Interval))
     i = Val(s)
-    If i < 200 Then i = 200
+    If i < 200 Then i = 75
     Timer1.Interval = i
         
 End Sub
@@ -273,14 +284,12 @@ Sub drawChart(pic As PictureBox, ByVal value As Double, ByVal max As Long)
 End Sub
 
 Function scaled(ByVal diff As Long, ByVal max As Double) As Double
-    'for max prog.100 (max_meter)
+    'results in max=100%
     Dim d As Double
     On Error GoTo hell
     
-    'max = max / (max_meter / 2)
-    'If max <= 0 Then max = 0.1
-'    d = diff * max_meter
-    d = diff * 100
+    d = diff * 100  '100%
+    If max = 0 Then max = 0.01
     d = d / max
     d = d / Timer1.Interval
     If d < 0 Then d = 0
