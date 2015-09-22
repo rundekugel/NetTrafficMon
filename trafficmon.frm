@@ -228,16 +228,21 @@ Private Sub Timer1_Timer()
 End Sub
 Sub updateGfx()
     Dim d As Double
+    Dim s As String
     
     d = m_din
-    ProgressBarIn.ToolTipText = CStr(d)
-    d = scaled(m_din, m_maxIn)
+    s = CStr(Round(d / 1024, 1)) + " KiB/s. |" + vbCrLf + "100%=" + CStr(Round(m_maxIn / 1024, 1)) + " KiB/s."
+    ProgressBarIn.ToolTipText = s  'CStr(Round(d / 1024, 1)) + " KiB/s."
+    P_in.ToolTipText = s
+    d = scaled(m_din, m_maxIn) * ProgressBarIn.max
     If d > ProgressBarIn.max Then d = ProgressBarIn.max
     ProgressBarIn.value = d
     
     d = m_dout
-    ProgressBarOut.ToolTipText = CStr(d)
-    d = scaled(m_dout, m_maxOut)
+    s = CStr(Round(d / 1024, 1)) + " KiB/s. |" + vbCrLf + "100%=" + CStr(Round(m_maxOut / 1024, 1)) + " KiB/s."
+    ProgressBarOut.ToolTipText = s      'CStr(Round(d / 1024, 1)) + " KiB/s."
+    P_out.ToolTipText = s
+    d = scaled(m_dout, m_maxOut) * ProgressBarOut.max
     If d > ProgressBarOut.max Then d = ProgressBarOut.max
     ProgressBarOut.value = d
     
@@ -250,6 +255,7 @@ Sub updateGfx()
     drawChart P_in, m_din, m_maxIn
     drawChart P_out, m_dout, m_maxOut
     
+
 End Sub
 
 Sub drawChart(pic As PictureBox, ByVal value As Double, ByVal max As Long)
@@ -266,7 +272,7 @@ Sub drawChart(pic As PictureBox, ByVal value As Double, ByVal max As Long)
     pic.Line (w, value)-(w, pic.Height), pic.ForeColor
 End Sub
 
-Function scaled(ByVal diff As Long, ByVal max As Double) As Long
+Function scaled(ByVal diff As Long, ByVal max As Double) As Double
     'for max prog.100 (max_meter)
     Dim d As Double
     On Error GoTo hell
@@ -274,8 +280,8 @@ Function scaled(ByVal diff As Long, ByVal max As Double) As Long
     'max = max / (max_meter / 2)
     'If max <= 0 Then max = 0.1
 '    d = diff * max_meter
-    d = diff * max
-'    d = d / max
+    d = diff * 100
+    d = d / max
     d = d / Timer1.Interval
     If d < 0 Then d = 0
     scaled = d
