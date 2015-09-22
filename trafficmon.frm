@@ -144,8 +144,8 @@ Private Declare Function BitBlt Lib "gdi32" _
     As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
      
 
-Dim m_cin As Long
-Dim m_cout As Long
+Dim m_cin As Variant
+Dim m_cout As Variant
 Dim m_din As Long
 Dim m_dout As Long
 Dim m_maxIn As Double
@@ -205,8 +205,8 @@ End Sub
 Private Sub Timer1_Timer()
     Dim s As String
     Dim lines() As String
-    Static oi As Long
-    Static oo As Long
+    Static oi As Variant
+    Static oo As Variant
     Dim r As String
 
     s = GetCommandOutput("netstat -e")
