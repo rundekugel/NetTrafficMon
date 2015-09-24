@@ -269,11 +269,11 @@ Sub updateGfx()
     If d < 0 Then d = 0
     ProgressBarOut.value = d
     
-    Text2 = m_cin
-    Text3 = m_cout
+    Text2 = cstrH(m_cin)
+    Text3 = cstrH(m_cout)
     
-    Text1 = m_maxIn
-    Text4 = m_maxOut
+    Text1 = cstrH(m_maxIn)
+    Text4 = cstrH(m_maxOut)
     
     drawChart P_in, m_din, m_maxIn
     drawChart P_out, m_dout, m_maxOut
@@ -333,4 +333,21 @@ Function scaleMax(ByRef max As Double, ByVal value As Long) As Integer
 
 End Function
 
-  
+Function cstrH(value As Variant) As String
+    Dim c() As String
+    Dim s As String
+    Dim le As Integer
+    
+    cstrH = CStr(value)
+    c = Split(cstrH, ",")
+    s = c(0)
+    le = Len(s)
+    While le > 3
+      s = Left(s, le - 3) + " " + Mid(s, le - 3 + 1)
+      le = le - 3
+    Wend
+    If UBound(c) > 0 Then
+        s = s + "," + c(1)
+    End If
+    cstrH = s
+End Function
