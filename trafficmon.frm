@@ -257,6 +257,7 @@ Sub updateGfx()
     P_in.ToolTipText = s
     d = scaled(m_din, m_maxIn) * ProgressBarIn.max
     If d > ProgressBarIn.max Then d = ProgressBarIn.max
+    If d < 0 Then d = 0
     ProgressBarIn.value = d
     
     d = m_dout
@@ -265,6 +266,7 @@ Sub updateGfx()
     P_out.ToolTipText = s
     d = scaled(m_dout, m_maxOut) * ProgressBarOut.max
     If d > ProgressBarOut.max Then d = ProgressBarOut.max
+    If d < 0 Then d = 0
     ProgressBarOut.value = d
     
     Text2 = m_cin
