@@ -208,6 +208,7 @@ Private Sub Timer1_Timer()
     Static oi As Variant
     Static oo As Variant
     Dim r As String
+    Const max_int = 2147483647
 
     s = GetCommandOutput("netstat -e")
     lines = helper.TextToLines(s)
@@ -220,11 +221,20 @@ Private Sub Timer1_Timer()
     m_cout = Val(lines(2))
     
     If oi = 0 Then oi = m_cin   '1st time?
-    m_din = m_cin - oi
+    If m_cin - oi > max_int Then
+        m_din = max_int
+    Else
+        m_din = m_cin - oi
+    End If
     m_din = oFilterIn.filter(m_din)
     oi = m_cin
     
     If oo = 0 Then oo = m_cout  '1st time?
+    If m_cout - oo > max_int Then
+        m_dout = max_int
+    Else
+        m_dout = m_cout - oo
+    End If
     m_dout = m_cout - oo
     m_dout = oFilterOut.filter(m_dout)
     oo = m_cout
@@ -299,15 +309,26 @@ hell:
     scaled = max
 End Function
 Function scaleMax(ByRef max As Double, ByVal value As Long) As Integer
+    Const idle_init = 2
+    Static idle As Integer
+    
+    If idle <= 0 Then idle = idle_init
+    
     If value > max Then
-        max = max + (value - max) / 2   'go smooth to upper border
-        max = value
+        idle = idle - 1
+        If idle <= 0 Then
+            max = max + (value - max) / 2   'go smooth to upper border
+            max = value
+        End If
     End If
     'adjust if value < 10%
-    If value < max / 10 Then
-        max = max - (max - value) / 13   'go very smooth to lower border
+    If value < max / 7 Then
+        idle = idle - 1
+        If idle <= 0 Then
+            max = max - (max - value) / 17   'go very smooth to lower border
+        End If
     End If
-'    max = max
+
 End Function
 
   
